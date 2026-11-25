@@ -120,7 +120,7 @@ body .iso-page{width:100%;max-width:980px;height:100vh;height:100dvh;margin:0 au
 .jk-title{font-weight:700;color:var(--navy);font-size:16px;line-height:1.2}
 .jk-title small{display:block;font-weight:500;color:var(--gold);font-size:12px;letter-spacing:.04em}
 .jk-readout{margin-left:auto;font-size:13px;font-weight:600;color:var(--navy);background:var(--gold-soft);border:1px solid var(--gold-2);padding:3px 10px;border-radius:999px;font-variant-numeric:tabular-nums}
-.jk-stage{position:relative;flex:1 1 auto;min-height:150px;border-radius:14px;background:var(--anatomy-card);border:1px solid #E3DCC9;overflow:hidden;touch-action:none;cursor:grab}
+.jk-stage{position:relative;flex:1 1 auto;min-height:110px;border-radius:14px;background:var(--anatomy-card);border:1px solid #E3DCC9;overflow:hidden;touch-action:none;cursor:grab}
 .jk-stage:active{cursor:grabbing}
 .jk-stage svg.iso-svg{position:absolute;inset:0;width:100%;height:100%}
 .jk-zoom{position:absolute;right:8px;top:8px;display:flex;gap:4px;align-items:center;z-index:2}
@@ -154,7 +154,7 @@ body .iso-page{width:100%;max-width:980px;height:100vh;height:100dvh;margin:0 au
 .jk-num{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .jk-dots{display:flex;gap:3px;min-height:9px}
 .jk-dots i{width:9px;height:9px;border-radius:50%;background:var(--dot);box-shadow:0 0 0 1px #fff}
-.jk-detail{flex:0 0 auto;max-height:34dvh;overflow:auto;padding:10px 14px;border-radius:12px;border:1px solid #E3DCC9;border-left:5px solid var(--gold);background:#fff}
+.jk-detail{flex:0 1 auto;min-height:0;overflow:auto;padding:10px 14px;border-radius:12px;border:1px solid #E3DCC9;border-left:5px solid var(--gold);background:#fff}
 .jk-detail header{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
 .jk-detail header b{color:var(--navy);font-size:15px}
 .jk-detail header span{color:var(--gold);font-weight:600;font-size:13px}
@@ -166,6 +166,20 @@ body .iso-page{width:100%;max-width:980px;height:100vh;height:100dvh;margin:0 au
 .jk-info p{margin:4px 0}
 .jk-bar button[aria-pressed="true"] .jk-dots i[data-lane="BL"]{background:var(--c-mid)}
 .jk-foot{text-align:center;font-size:12px;color:var(--navy);opacity:.75}
+@media (orientation:landscape) and (max-height:520px){
+  body .iso-page{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr) auto auto;column-gap:10px;row-gap:6px;padding:8px}
+  body .iso-page>*{grid-column:2;min-width:0}
+  body .iso-page>.jk-stage{grid-column:1;grid-row:1 / 7;min-height:0}
+  .jk-head{flex-wrap:nowrap}
+  .jk-title{font-size:13px}
+  .jk-readout{font-size:11px;padding:2px 8px}
+  .jk-bar{gap:3px}
+  .jk-bar button{padding:5px 0}
+  .jk-num{font-size:14px}
+  .jk-dots i{width:6px;height:6px}
+  .jk-detail{padding:8px 10px}
+  .jk-detail ol{font-size:12px}
+}
 @media (max-width:600px){
   body .iso-page{padding:8px;gap:6px}
   .jk-title{font-size:14px}
@@ -959,7 +973,7 @@ document.querySelector("[data-zoom='all']").addEventListener("click", () => { zo
 stage.addEventListener("wheel", (event) => { event.preventDefault(); view.follow = false; zoomTo(view.s * Math.exp(-event.deltaY * 0.0015), [event.clientX, event.clientY]); }, { passive: false });
 const touches = new Map();
 let pinch = null;
-stage.addEventListener("pointerdown", (event) => { stage.setPointerCapture(event.pointerId); touches.set(event.pointerId, [event.clientX, event.clientY]); pinch = null; });
+stage.addEventListener("pointerdown", (event) => { if (event.target.closest("button")) return; stage.setPointerCapture(event.pointerId); touches.set(event.pointerId, [event.clientX, event.clientY]); pinch = null; });
 stage.addEventListener("pointermove", (event) => {
   if (!touches.has(event.pointerId)) return;
   const before = touches.get(event.pointerId);
